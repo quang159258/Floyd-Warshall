@@ -19,6 +19,7 @@ int main()
     vector<vector<int>>GG =
     {
         {0}
+
     };
     Graph g = Graph(GG.size());
     string nd[8] = { "1. Nhap File","2. Nhap thu cong","3. Tinh duong di ngan nhat","4. Truy Vet","5. Game Me Cung","6. Game tim duong","7. Bai toan Cho Trung Tam","0. Dung chuong trinh" };
