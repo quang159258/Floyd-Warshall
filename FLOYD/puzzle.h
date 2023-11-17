@@ -22,6 +22,7 @@ void InitWindow()
             }
         }
     }
+
     cout << "10%\n";
     vector<vector<int>>Matrix(size*size, vector < int>(size*size, 0));
     for (int i = 0; i < size; i++)
