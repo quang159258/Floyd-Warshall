@@ -52,14 +52,19 @@ void InitWindow()
     }
     cout << "20%\n";
     Graph G=Graph(size*size);
-    
+    int number = 7;
     G.Floyd(Matrix);
     cout << "80%\n";
-    queue<int> Path;
+    vector<queue<int>> Path(number);
     queue<int>Way;
     queue<int>Way_tmp;
+    float cellSize = 40.f;
+    int min=-1;
+    int tmp;
     cout << "90%\n";
-    int start[2],end[2];
+    int start[2];
+    bool flag = true;
+    vector<vector<int>>end(number,vector<int>(2,0));
     
 loop:
     do
@@ -67,14 +72,20 @@ loop:
         start[0] = rand() % size ;
         start[1] = rand() % size ;
     } while (Maze[start[0]][start[1]] == 0);
-    do
+    for(int i=0;i<number;i++)
     {
-        end[0] = rand() % size ;
-        end[1] = rand() % size ;
-    } while (Maze[end[0]][end[1]] == 0&& end[0]==start[0]&& end[1]==start[1]);
-    Path = G.TruyVet(start[0] * size + start[1] + 1, end[0] * size + end[1] + 1);
-    if (Path.empty())
-        goto loop;
+        do
+        {
+            end[i][0] = rand() % size;
+            end[i][1] = rand() % size;
+        } while (Maze[end[i][0]][end[i][1]] == 0 ||( end[i][0] == start[0] && end[i][1] == start[1]));
+    }
+    for (int i = 0; i < number; i++)
+    {
+        Path[i] = G.TruyVet(start[0] * size + start[1] + 1, end[i][0] * size + end[i][1] + 1);
+        if (Path[i].empty())
+            goto loop;
+    }
     cout << "100%\n";
     RenderWindow window(VideoMode(40 * size, 40 * size), "MAZE");
     while (window.isOpen())
@@ -85,10 +96,10 @@ loop:
                 window.close();
             }
         }
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(350));
         window.clear();
         
-        float cellSize = 40.f;
+        
         sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
         cell.setOutlineThickness(1);
         cell.setOutlineColor(Color::Black);
@@ -99,11 +110,40 @@ loop:
                 window.draw(cell);
             }
         }
-       if(!Path.empty())
+        if(flag)
         {
-           Way.push(Path.front());
-           Path.pop();
+            tmp = 10000000;
+            min = -1;
+            for (int i = 0; i < number; i++)
+            {
+                if (tmp > G.Length[start[0] * size + start[1]][end[i][0] * size + end[i][1]])
+                {
+                    tmp=G.Length[start[0] * size + start[1]][end[i][0] * size + end[i][1]];
+                    min = i;
+                }
+            }
+            for (int i = 0; i < number; i++)
+                Path[i] = G.TruyVet(start[0] * size + start[1] + 1, end[i][0] * size + end[i][1] + 1);
+            flag = false;
         }
+        if(!Path[min].empty())
+        {
+           Way.push(Path[min].front());
+           Path[min].pop();
+        }
+       
+       if (Path[min].empty())
+       {
+           
+           start[0] = end[min][0];
+           start[1] = end[min][1];
+           Path.erase(Path.begin() + min);
+           end.erase(end.begin() + min);
+           number--;
+           flag = true;
+           while (!Way.empty())
+               Way.pop();
+       }
        Way_tmp = Way;
        while (!Way_tmp.empty())
        {
@@ -119,10 +159,29 @@ loop:
        cell.setPosition(start[0] * cellSize, start[1] * cellSize);
        cell.setFillColor(sf::Color::Green);
        window.draw(cell);
-       cell.setPosition(end[0] * cellSize, end[1] * cellSize);
-       cell.setFillColor(sf::Color::Red);
-       window.draw(cell);
+       for (int i = 0; i < number; i++)
+       {
+           cell.setPosition(end[i][0] * cellSize, end[i][1] * cellSize);
+           cell.setFillColor(sf::Color::Red);
+           window.draw(cell);
+       }
        
-        window.display();
+       window.display();
+       if (number == 0)
+       {
+           for (int i = 0; i < size; ++i) {
+               for (int j = 0; j < size; ++j) {
+                   cell.setPosition(i * cellSize, j * cellSize);
+                   cell.setFillColor(Maze[i][j] == 0 ? sf::Color::Black : sf::Color::White);
+                   window.draw(cell);
+               }
+           }
+           cell.setPosition(start[0] * cellSize, start[1] * cellSize);
+           cell.setFillColor(sf::Color::Green);
+           window.draw(cell);
+           window.display();
+           std::this_thread::sleep_for(std::chrono::seconds(4));
+           window.close();
+       }
     }
 }

@@ -115,7 +115,8 @@ loop:
                         break;
                     case 4:
                         InitWindow();
-                        
+                        textcolor(7);
+                        system("cls");
                         break;
                     case 5:
                         game.gameloop();//co 1 bug o day la khi thoat ra roi vo lai thi no tu dong chuyen sang mode menu luon
