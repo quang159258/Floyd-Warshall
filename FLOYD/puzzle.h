@@ -6,6 +6,7 @@ using namespace sf;
 using namespace std;
 void InitWindow()
 {
+    SetConsoleTitle(L"Thuat Toan FLOYD");
     vector<vector<int>>Maze;
     srand(time(NULL));
     int size = 23;

@@ -32,6 +32,7 @@ int main()
     int b_color = 159, b_color_bright = 75;
 
 loop:
+    SetConsoleTitle(L"Thuat Toan FLOYD");
     xptr = x, yptr = y;
     xpre = xptr, ypre = yptr;
     int checkLuaChon = 1;
