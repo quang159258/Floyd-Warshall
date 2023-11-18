@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"SFML/Graphics.hpp"
 #include<ctime>
 #include<thread>
@@ -9,18 +9,18 @@ void InitWindow()
     SetConsoleTitle(L"Thuat Toan FLOYD");
     vector<vector<int>>Maze;
     srand(time(NULL));
-    int size = 23;
+    int size = 25;
     textcolor(7);
     system("cls");
     cout << "Dang chuan bi me cung!!!\n";
     Maze.resize(size, vector<int>(size, 0));
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            float randomValue = static_cast<float>(rand()) / RAND_MAX;  // Random value between 0 and 1
-
-            if (randomValue > 0.4) {
-                Maze[i][j] = 1;  // Set as path
-            }
+    for (int i = 0; i < size; ++i)
+    {
+        for (int j = 0; j < size; ++j)
+        {
+            float randomValue = (float)(rand()) / RAND_MAX;  // Ngẫu nhiên từ 0 tới 1
+            if (randomValue > 0.3) 
+                Maze[i][j] = 1;  // Đặt là đường
         }
     }
 
@@ -131,7 +131,6 @@ loop:
             Way.push(Path[min].front());
             Path[min].pop();
         }
-
         if (Path[min].empty())
         {
 
@@ -180,7 +179,8 @@ loop:
             cell.setFillColor(sf::Color::Green);
             window.draw(cell);
             window.display();
-            std::this_thread::sleep_for(std::chrono::seconds(4));
+            cout << "Window closed. Exiting...\n";
+            std::this_thread::sleep_for(std::chrono::seconds(3));
             window.close();
         }
     }
