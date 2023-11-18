@@ -36,31 +36,42 @@ public:
 		}
 		return Way;
 	}
-	void Floyd(vector<vector<int>>Matrix_Weight) // Thuật toán Floyd
+	void Floyd(vector<vector<int>> Matrix_Weight) // Thuật toán Floyd
 	{
-		for (int i = 0; i < n; i++)// khoi tao ma tran D
+		for (int i = 0; i < n; i++) // khoi tao ma tran D
 			for (int j = 0; j < n; j++)
 			{
 				Length[i][j] = Matrix_Weight[i][j];
 				if (Length[i][j] != 0 && Length[i][j] != vc)
 					LuuVet[i][j] = j + 1;
-				else LuuVet[i][j] = 0;
+				else
+					LuuVet[i][j] = 0;
 				if (Length[i][j] == 0 && i != j)
 					Length[i][j] = vc;
-
 			}
 
 		for (int k = 0; k < n; k++) // Thuat toan Floyd
 		{
 			for (int i = 0; i < n; i++)
+			{
+				if (i == k)
+					continue;
+
 				for (int j = 0; j < n; j++)
+				{
+					if (j == k)
+						continue;
+
 					if (Length[i][j] > (Length[i][k] + Length[k][j]))
 					{
 						Length[i][j] = Length[i][k] + Length[k][j];
 						LuuVet[i][j] = LuuVet[i][k];
 					}
+				}
+			}
 		}
 	}
+
 };
 vector<vector<int>> Nhap_Graph_File(string address)
 {

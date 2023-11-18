@@ -24,7 +24,7 @@ void InitWindow()
     }
 
     cout << "10%\n";
-    vector<vector<int>>Matrix(size*size, vector < int>(size*size, 0));
+    vector<vector<int>>Matrix(size * size, vector < int>(size * size, 0));
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
@@ -42,7 +42,7 @@ void InitWindow()
             }
             if (j >= 1 && Maze[i][j - 1])
             {
-                Matrix[Current][size * (i) + j-1] = Matrix[size * (i) + j-1][Current] = 1;
+                Matrix[Current][size * (i)+j - 1] = Matrix[size * (i)+j - 1][Current] = 1;
             }
             if (j <= size - 2 && Maze[i][j + 1])
             {
@@ -51,43 +51,43 @@ void InitWindow()
         }
     }
     cout << "20%\n";
-    Graph G=Graph(size*size);
-    int number = 7;
+    Graph G = Graph(size * size);
+    int number = 12;
     G.Floyd(Matrix);
     cout << "80%\n";
     vector<queue<int>> Path(number);
     queue<int>Way;
     queue<int>Way_tmp;
-    float cellSize = 40.f;
-    int min=-1;
+    float cellSize = 25.f;
+    int min = -1;
     int tmp;
     cout << "90%\n";
     int start[2];
     bool flag = true;
-    vector<vector<int>>end(number,vector<int>(2,0));
-    
+    vector<vector<int>>end(number, vector<int>(2, 0));
+
 loop:
     do
     {
-        start[0] = rand() % size ;
-        start[1] = rand() % size ;
+        start[0] = rand() % size;
+        start[1] = rand() % size;
     } while (Maze[start[0]][start[1]] == 0);
-    for(int i=0;i<number;i++)
+    for (int i = 0; i < number; i++)
     {
         do
         {
             end[i][0] = rand() % size;
             end[i][1] = rand() % size;
-        } while (Maze[end[i][0]][end[i][1]] == 0 ||( end[i][0] == start[0] && end[i][1] == start[1]));
+        } while (Maze[end[i][0]][end[i][1]] == 0 || (end[i][0] == start[0] && end[i][1] == start[1]));
     }
     for (int i = 0; i < number; i++)
     {
-        Path[i] = G.TruyVet(start[0] * size + start[1] + 1, end[i][0] * size + end[i][1] + 1);
-        if (Path[i].empty())
+        
+        if (G.Length[start[0] * size + start[1] ][ end[i][0] * size + end[i][1] ]==vc)
             goto loop;
     }
     cout << "100%\n";
-    RenderWindow window(VideoMode(40 * size, 40 * size), "MAZE");
+    RenderWindow window(VideoMode(cellSize * size, cellSize * size), "MAZE");
     while (window.isOpen())
     {
         sf::Event event;
@@ -96,10 +96,10 @@ loop:
                 window.close();
             }
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(350));
+        std::this_thread::sleep_for(std::chrono::milliseconds(250));
         window.clear();
-        
-        
+
+
         sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
         cell.setOutlineThickness(1);
         cell.setOutlineColor(Color::Black);
@@ -110,7 +110,7 @@ loop:
                 window.draw(cell);
             }
         }
-        if(flag)
+        if (flag)
         {
             tmp = 10000000;
             min = -1;
@@ -118,70 +118,69 @@ loop:
             {
                 if (tmp > G.Length[start[0] * size + start[1]][end[i][0] * size + end[i][1]])
                 {
-                    tmp=G.Length[start[0] * size + start[1]][end[i][0] * size + end[i][1]];
+                    tmp = G.Length[start[0] * size + start[1]][end[i][0] * size + end[i][1]];
                     min = i;
                 }
             }
-            for (int i = 0; i < number; i++)
-                Path[i] = G.TruyVet(start[0] * size + start[1] + 1, end[i][0] * size + end[i][1] + 1);
+                Path[min] = G.TruyVet(start[0] * size + start[1] + 1, end[min][0] * size + end[min][1] + 1);
             flag = false;
         }
-        if(!Path[min].empty())
+        if (!Path[min].empty())
         {
-           Way.push(Path[min].front());
-           Path[min].pop();
+            Way.push(Path[min].front());
+            Path[min].pop();
         }
-       
-       if (Path[min].empty())
-       {
-           
-           start[0] = end[min][0];
-           start[1] = end[min][1];
-           Path.erase(Path.begin() + min);
-           end.erase(end.begin() + min);
-           number--;
-           flag = true;
-           while (!Way.empty())
-               Way.pop();
-       }
-       Way_tmp = Way;
-       while (!Way_tmp.empty())
-       {
-           int currentCell = Way_tmp.front();
-           int col = (currentCell - 1) / size;  // Adjust the index
-           int row = (currentCell - 1) % size;  // Adjust the index
 
-           cell.setPosition(col* cellSize, row* cellSize);  // Swap row and col
-           cell.setFillColor(sf::Color::Blue);
-           window.draw(cell);
-           Way_tmp.pop();
-       }
-       cell.setPosition(start[0] * cellSize, start[1] * cellSize);
-       cell.setFillColor(sf::Color::Green);
-       window.draw(cell);
-       for (int i = 0; i < number; i++)
-       {
-           cell.setPosition(end[i][0] * cellSize, end[i][1] * cellSize);
-           cell.setFillColor(sf::Color::Red);
-           window.draw(cell);
-       }
-       
-       window.display();
-       if (number == 0)
-       {
-           for (int i = 0; i < size; ++i) {
-               for (int j = 0; j < size; ++j) {
-                   cell.setPosition(i * cellSize, j * cellSize);
-                   cell.setFillColor(Maze[i][j] == 0 ? sf::Color::Black : sf::Color::White);
-                   window.draw(cell);
-               }
-           }
-           cell.setPosition(start[0] * cellSize, start[1] * cellSize);
-           cell.setFillColor(sf::Color::Green);
-           window.draw(cell);
-           window.display();
-           std::this_thread::sleep_for(std::chrono::seconds(4));
-           window.close();
-       }
+        if (Path[min].empty())
+        {
+
+            start[0] = end[min][0];
+            start[1] = end[min][1];
+            Path.erase(Path.begin() + min);
+            end.erase(end.begin() + min);
+            number--;
+            flag = true;
+            while (!Way.empty())
+                Way.pop();
+        }
+        Way_tmp = Way;
+        while (!Way_tmp.empty())
+        {
+            int currentCell = Way_tmp.front();
+            int col = (currentCell - 1) / size;  // Adjust the index
+            int row = (currentCell - 1) % size;  // Adjust the index
+
+            cell.setPosition(col * cellSize, row * cellSize);  // Swap row and col
+            cell.setFillColor(sf::Color::Blue);
+            window.draw(cell);
+            Way_tmp.pop();
+        }
+        cell.setPosition(start[0] * cellSize, start[1] * cellSize);
+        cell.setFillColor(sf::Color::Green);
+        window.draw(cell);
+        for (int i = 0; i < number; i++)
+        {
+            cell.setPosition(end[i][0] * cellSize, end[i][1] * cellSize);
+            cell.setFillColor(sf::Color::Red);
+            window.draw(cell);
+        }
+
+        window.display();
+        if (number == 0)
+        {
+            for (int i = 0; i < size; ++i) {
+                for (int j = 0; j < size; ++j) {
+                    cell.setPosition(i * cellSize, j * cellSize);
+                    cell.setFillColor(Maze[i][j] == 0 ? sf::Color::Black : sf::Color::White);
+                    window.draw(cell);
+                }
+            }
+            cell.setPosition(start[0] * cellSize, start[1] * cellSize);
+            cell.setFillColor(sf::Color::Green);
+            window.draw(cell);
+            window.display();
+            std::this_thread::sleep_for(std::chrono::seconds(4));
+            window.close();
+        }
     }
 }
