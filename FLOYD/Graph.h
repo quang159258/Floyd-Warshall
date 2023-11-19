@@ -49,19 +49,16 @@ public:
 				if (Length[i][j] == 0 && i != j)
 					Length[i][j] = vc;
 			}
-
 		for (int k = 0; k < n; k++) // Thuat toan Floyd
 		{
 			for (int i = 0; i < n; i++)
 			{
 				if (i == k)
 					continue;
-
 				for (int j = 0; j < n; j++)
 				{
 					if (j == k)
 						continue;
-
 					if (Length[i][j] > (Length[i][k] + Length[k][j]))
 					{
 						Length[i][j] = Length[i][k] + Length[k][j];
