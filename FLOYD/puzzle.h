@@ -104,8 +104,8 @@ loop:
         sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
         cell.setOutlineThickness(1);
         cell.setOutlineColor(Color::Black);
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 cell.setPosition(i * cellSize, j * cellSize);
                 cell.setFillColor(Maze[i][j] == 0 ? sf::Color::Black : sf::Color::White);
                 window.draw(cell);

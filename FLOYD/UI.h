@@ -237,9 +237,14 @@ void UI_TruyVet(Graph g)
                 }
         }
         gotoXY(32 + 1, 5 + 4);
+        cout << "Do dai duong di ngan nhat tu diem " << u << " den diem " << v << ": ";
+        if (g.Length[u - 1][v - 1] != vc)
+            cout << g.Length[u - 1][v - 1];
+        else cout << "INF";
+        gotoXY(32 + 1, 5 + 5);
         cout << "Duong di tu diem " << u << " den diem " << v << ": ";
         queue<int> Way = g.TruyVet(u, v);
-        gotoXY(32 + 1, 5 + 5);
+        gotoXY(32 + 1, 5 + 6);
         if (!Way.empty())
             while (!Way.empty())
             {
@@ -249,6 +254,63 @@ void UI_TruyVet(Graph g)
                 Way.pop();
             }
         else cout << "Khong di chuyen!!";
+    }
+    ShowCur(0);
+    _getch();
+}
+
+void UI_ChuTrinh(Graph g, vector<vector<int>>GG)
+{
+    Box(32, 5, 85, 19, 159, " ");
+    gotoXY(32 + 1, 5 + 1);
+    cout << "Do thi co " << g.n << " diem";// n la so diem cua do thi
+    if (g.n == 1)
+    {
+        gotoXY(32 + 1, 5 + 2);
+        cout << "Khong co chu trinh!!";
+    }
+    else
+    {
+        string tmp;
+        int u;
+        ShowCur(1);
+        while (1)
+        {
+            gotoXY(32 + 1, 5 + 2);
+            cout << "Nhap diem bat dau:                               ";
+            gotoXY(32 + 1, 5 + 2);
+            cout << "Nhap diem bat dau: ";
+            getline(cin, tmp);
+            if (tmp != "")
+                if (isDigit(tmp) && stoi(tmp) > 0 && stoi(tmp) <= g.n)
+                {
+                    u = stoi(tmp);
+                    break;
+                }
+        }
+        gotoXY(32 + 1, 5 + 3);
+        queue<int>ChuTrinh = g.TimChuTrinh(GG, u);
+        if (!ChuTrinh.empty())
+        {
+            cout << "Do dai chu trinh ngan nhat tu " << u << " la:";
+            cout << g.Length[u - 1][ChuTrinh.back() - 1] + g.Length[ChuTrinh.back() - 1][u - 1];
+            gotoXY(32 + 1, 5 + 4);
+            cout << "Chu trinh tu diem " << u << ": ";
+            gotoXY(32 + 1, 5 + 5);
+            if (!ChuTrinh.empty())
+            {
+                while (!ChuTrinh.empty())
+                {
+                    cout << ChuTrinh.front();
+                    if (ChuTrinh.size() >= 1)
+                        cout << "->";
+                    ChuTrinh.pop();
+                }
+                cout << u;
+            }
+
+        }
+        else cout << "Khong co chu trinh!!";
     }
     ShowCur(0);
     _getch();
@@ -265,6 +327,11 @@ void UI_CTT(vector<vector<int>>GG)
     cout << "Tong khoang cach tu trung tam dich vu den cac dia diem dan cu: " << Info.second;
     _getch();
 }
+void UI_Show(vector<vector<int>>GG)
+{
+    Box(1, 4, 118, 21, 159, " ");
+    n_Box_NoBorder(3, 5, (MaxLengthMatrix(GG) + 2) * (GG.size()) + 2, GG.size() + 1, 159, GG);
+}
 void UI_Thanks()
 {
     textcolor(7);
@@ -275,5 +342,5 @@ void UI_Thanks()
     Box_E(5, y - 2, 25, 2, 159, "Thanh vien nhom");
     n_Box_NoBorder(5, ++y, 25, 2, 159, nd, 5);
     gotoXY(50, 7);
-    cout << "San Pham demo thuat toan FLOYD";
+    cout << "San Pham demo thuat toan FLOYD - Warshall";
 }

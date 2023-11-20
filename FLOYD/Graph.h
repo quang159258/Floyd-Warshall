@@ -68,7 +68,29 @@ public:
 			}
 		}
 	}
-
+	queue<int> TimChuTrinh(vector<vector<int>>GG, int u)
+	{
+		int min, i = 0;
+		queue<int>R;
+		for (i = 0; i < n; i++)
+		{
+			if (GG[i][u - 1] != 0)
+			{
+				min = Length[i][u - 1] + Length[u - 1][i];
+				R = TruyVet(u, i + 1);
+				break;
+			}
+		}
+		for (i; i < n; i++)
+		{
+			if (GG[i][u - 1] != 0)
+			{
+				min = min < Length[i][u - 1] + Length[u - 1][i] ? min : Length[i][u - 1] + Length[u - 1][i];
+				R = TruyVet(u, i + 1);
+			}
+		}
+		return R; // nếu R rỗng thì không có chu trình
+	}
 };
 vector<vector<int>> Nhap_Graph_File(string address)
 {
